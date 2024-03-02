@@ -105,6 +105,8 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 	movePlanes(); 
+	keepOnScreen(m_smallPlaneLocation);
+	keepOnScreen(m_bigPlaneLocation);
 }
 
 /// <summary>
@@ -181,4 +183,31 @@ void Game::movePlanes()
 	m_bigPlaneSprite.setPosition(m_bigPlaneLocation); 
 	m_smallPlaneLocation += m_smallPlaneVelocity;
 	m_smallPlaneSprite.setPosition(m_smallPlaneLocation);
+}
+
+
+/// <summary>
+/// check for bouundries and set to adge  if over
+/// </summary>
+/// <param name="t_location">location of plane updateable</param>
+void Game::keepOnScreen(sf::Vector2f & t_location)
+{
+	float screenWidth = static_cast<float>(WIDTH);
+	float screenHeight = static_cast<float>(HEIGHT); 
+	if (t_location.x < 0.0f)
+	{
+		t_location.x = 0.0f;
+	}
+	if (t_location.x > screenWidth)
+	{
+		t_location.x = screenWidth;
+	}
+	if (t_location.y < 0.0f)
+	{
+		t_location.y = 0.0f;
+	}
+	if (t_location.y > screenHeight)
+	{
+		t_location.y = screenHeight;
+	}
 }

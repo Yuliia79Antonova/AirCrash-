@@ -39,6 +39,7 @@ private:
 	void setupPlanes();
 
 	void movePlanes();
+	void keepOnScreen(sf::Vector2f & t_location);
 
 
 	sf::RenderWindow m_window; // main SFML window
