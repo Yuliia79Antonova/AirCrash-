@@ -1,7 +1,7 @@
 /// <summary>
 /// simple game loop for SFML[2.5.1]
 /// 
-/// @author Peter Lowe
+/// @author Yuliia Antonova
 /// @date Feb 2024
 /// </summary>
 
