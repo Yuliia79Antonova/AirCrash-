@@ -78,6 +78,14 @@ void Game::processEvents()
 		{
 			processKeys(newEvent);
 		}
+		if (sf::Event::MouseButtonPressed == newEvent.type)
+		{
+			processMouseDown(newEvent);
+		}
+		if (sf::Event::MouseButtonReleased == newEvent.type)
+		{
+			processMouseUp(newEvent);
+		}
 	}
 }
 
@@ -122,6 +130,41 @@ void Game::render()
 	
 	
 	m_window.display();
+}
+
+void Game::processMouseDown(sf::Event t_event)
+{
+	m_mouseDown.x = static_cast<float>(t_event.mouseButton.x);
+	m_mouseDown.y = static_cast<float>(t_event.mouseButton.y);
+}
+
+void Game::processMouseUp(sf::Event t_event)
+{
+	sf::Vector2f mouseUp;
+	sf::Vector2f displacement;
+	float headingD;
+	float headingR;
+
+	mouseUp.x = static_cast<float>(t_event.mouseButton.x);
+	mouseUp.y = static_cast<float>(t_event.mouseButton.y);
+
+	displacement = mouseUp - m_mouseDown;
+	headingR = std::atan2f(displacement.y, displacement.x);
+	headingD = headingR * 180.0f / M_PI; 
+	headingD = headingD + 90.0f;
+
+	if (sf::Mouse::Left == t_event.mouseButton.button)
+	{
+		m_bigHeading = headingD;
+		m_bigPlaneVelocity = displacement / 100.0f;
+		m_bigPlaneSprite.setRotation(headingD);
+	}
+	if (sf::Mouse::Right == t_event.mouseButton.button)
+	{
+		m_smallHeading = headingD;
+		m_smallPlaneVelocity = displacement / 50.0f;
+		m_smallPlaneSprite.setRotation(headingD);
+	}
 }
 
 /// <summary>

@@ -11,6 +11,9 @@
 /// </summary>
 #include <SFML/Graphics.hpp>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 
 const int HEIGHT = 800; // SCREEN HEIGHT
@@ -32,14 +35,18 @@ private:
 	void processKeys(sf::Event t_event);
 	void update(sf::Time t_deltaTime);
 	void render();
+
+	void processMouseDown(sf::Event t_event);
+	void processMouseUp(sf::Event t_event);
 	
+
 	void setupFontAndText();
 	void setupSprite();
 	void setupSky();
 	void setupPlanes();
 
 	void movePlanes();
-	void keepOnScreen(sf::Vector2f & t_location);
+	void keepOnScreen(sf::Vector2f &t_location);
 
 
 	sf::RenderWindow m_window; // main SFML window
@@ -57,13 +64,15 @@ private:
 
 	// same for small plane
 	sf::Sprite m_smallPlaneSprite;
-	sf::Vector2f m_smallPlaneVelocity{ -0.6f, 0.6f };
+	sf::Vector2f m_smallPlaneVelocity{ -0.6f,0.6f };
 	sf::Vector2f m_smallPlaneLocation{ 500.0f, 0.0f };	
 	float m_smallHeading{ 225.0f }; // heading of small plane
 
 
-	bool m_exitGame; // control exiting game
+	sf::Vector2f m_mouseDown; // location of mouse down click
 
+	bool m_exitGame; // control exiting game
+	
 };
 
 #endif // !GAME_HPP
