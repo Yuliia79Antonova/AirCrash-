@@ -47,6 +47,7 @@ private:
 
 	void movePlanes();
 	void keepOnScreen(sf::Vector2f &t_location);
+	void drawPlane(sf::Sprite& t_plane);
 
 
 	sf::RenderWindow m_window; // main SFML window
@@ -72,7 +73,7 @@ private:
 	sf::Vector2f m_mouseDown; // location of mouse down click
 
 	bool m_exitGame; // control exiting game
-	
+	bool m_debugging{ false }; // is debug mode on
 };
 
 #endif // !GAME_HPP

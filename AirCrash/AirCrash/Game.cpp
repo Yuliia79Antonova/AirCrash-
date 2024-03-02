@@ -100,6 +100,10 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
+	if (sf::Keyboard::Q == t_event.key.code)
+	{
+		m_debugging = !m_debugging; 
+	}
 }
 
 /// <summary>
@@ -126,6 +130,11 @@ void Game::render()
 	m_window.draw(m_skySprite);
 	m_window.draw(m_bigPlaneSprite); 
 	m_window.draw(m_smallPlaneSprite);
+	if (m_debugging)
+	{
+		drawPlane(m_bigPlaneSprite);
+		drawPlane(m_smallPlaneSprite);
+	}
 
 	
 	
@@ -253,4 +262,45 @@ void Game::keepOnScreen(sf::Vector2f & t_location)
 	{
 		t_location.y = screenHeight;
 	}
+}
+
+void Game::drawPlane(sf::Sprite& t_plane)
+{
+	sf::CircleShape dot{ 4.0f };
+	sf::RectangleShape globalBounds{};
+	sf::CircleShape ring;
+	float ringRadis = 0.0f;
+
+	globalBounds.setFillColor(sf::Color::Transparent);
+	globalBounds.setOutlineColor(sf::Color::Green);
+	globalBounds.setOutlineThickness(2.0f);
+	globalBounds.setOrigin(t_plane.getGlobalBounds().width / 2.0f,
+		                    t_plane.getGlobalBounds().height / 2.0f);
+	globalBounds.setPosition(t_plane.getPosition());
+	globalBounds.setSize(sf::Vector2f{ t_plane.getGlobalBounds().width,
+		                        t_plane.getGlobalBounds().height });
+
+	dot.setFillColor(sf::Color::Yellow);
+	dot.setOrigin( 4.0f, 4.0f);
+	dot.setPosition(t_plane.getPosition());
+
+	ring.setFillColor(sf::Color::Transparent);
+	ring.setOutlineColor(sf::Color::Red);
+	if (t_plane.getLocalBounds().height > t_plane.getLocalBounds().width)
+	{
+		ringRadis = t_plane.getLocalBounds().height / 2.0f;
+	}
+	else
+	{
+		ringRadis = t_plane.getLocalBounds().width / 2.0f;
+	}
+	ring.setRadius(ringRadis);
+	ring.setOrigin(ringRadis, ringRadis);
+	ring.setOutlineThickness(2.0f);
+	ring.setPosition(t_plane.getPosition());
+
+
+	m_window.draw(dot);
+	m_window.draw(globalBounds);
+	m_window.draw(ring);
 }
