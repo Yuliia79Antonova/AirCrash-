@@ -23,6 +23,8 @@ Game::Game() :
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupPlanes(); // load planes
+	setupExplosion(); // explosion
+
 }
 
 /// <summary>
@@ -125,14 +127,16 @@ void Game::update(sf::Time t_deltaTime)
 	keepOnScreen(m_smallPlaneLocation);
 	keepOnScreen(m_bigPlaneLocation);
 	//if (checkCollisionBB(m_bigPlaneSprite, m_smallPlaneSprite))
-	if(checkCollisionsDistance(m_bigPlaneLocation, m_bigRadius,
-		                     m_smallPlaneLocation, m_smallRadius))
+	if (!m_exploding)
 	{
-		m_bigPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
-		m_smallPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
+		m_exploding = checkCollisionsDistance(m_bigPlaneLocation, m_bigRadius,
+			m_smallPlaneLocation, m_smallRadius);
+	}
+	if (m_exploding)
+	{
+		animateExplosion();
 	}
 }
-
 /// <summary>
 /// draw the frame and then switch buffers
 /// </summary>
@@ -142,6 +146,10 @@ void Game::render()
 	m_window.draw(m_skySprite);
 	m_window.draw(m_bigPlaneSprite); 
 	m_window.draw(m_smallPlaneSprite);
+	if (m_exploding)
+	{
+		m_window.draw(m_explosionSprite);
+	}
 	if (m_debugging)
 	{
 		drawPlane(m_bigPlaneSprite);
@@ -251,6 +259,42 @@ void Game::setupPlanes()
 	m_smallRadius = smallRectangle.width / 2.0f; 
 }
 
+void Game::setupExplosion()
+{
+	if (!m_explosiuonTexture.loadFromFile("ASSETS\\IMAGES\\explosion.png"))
+	{
+		std::cout << "problem with explosion" << std::endl;
+	}
+	m_explosionSprite.setTexture(m_explosiuonTexture);
+	m_explosionSprite.setTextureRect(sf::IntRect{ 0,0,100,100 }); 
+	m_explosionSprite.setPosition(400.0f, 400.0f);
+	m_explosionSprite.setOrigin(50.0f, 50.0f);
+}
+
+void Game::animateExplosion()
+{
+	int frame;
+	const int ROWS = 6;
+	const int COLS = 8;
+	const int SIZE = 100;
+	int col;
+	int row;
+	m_expFrameTimer += m_expIncrement;
+	frame = static_cast<int>(m_expFrameTimer);
+	if (frame > 47)
+	{
+		m_expFrameTimer -= 48.0f;
+		frame = 0;
+		m_exploding = false;
+	}
+	if (frame != m_expFrame)
+	{
+		col = frame % 8;
+		row = frame / 6;
+		m_explosionSprite.setTextureRect(sf::IntRect(col * SIZE, row * SIZE, SIZE, SIZE));
+	}
+}
+
 void Game::movePlanes()
 {
 	m_bigPlaneLocation += m_bigPlaneVelocity;
@@ -358,6 +402,8 @@ bool Game::checkCollisionsDistance(sf::Vector2f t_pos1, float t_rad1, sf::Vector
 	distance = vectorLenght(displacement);
 	if (distance < minimumSafeDistance)
 	{
+		m_exploding = true;
+		m_explosionSprite.setPosition((t_pos1 + t_pos2) / 2.0f);
 		return true;
 	}
 
