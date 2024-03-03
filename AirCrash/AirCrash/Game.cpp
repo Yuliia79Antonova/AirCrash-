@@ -119,6 +119,11 @@ void Game::update(sf::Time t_deltaTime)
 	movePlanes(); 
 	keepOnScreen(m_smallPlaneLocation);
 	keepOnScreen(m_bigPlaneLocation);
+	if (checkCollisionBB(m_bigPlaneSprite, m_smallPlaneSprite))
+	{
+		m_bigPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
+		m_smallPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
+	}
 }
 
 /// <summary>
@@ -314,4 +319,13 @@ void Game::drawPlane(sf::Sprite& t_plane)
 	m_window.draw(globalBounds);
 	m_window.draw(localBounds); 
 	m_window.draw(ring);
+}
+
+bool Game::checkCollisionBB(sf::Sprite& t_plane1, sf::Sprite& t_plane2)
+{
+	if (t_plane1.getGlobalBounds().intersects(t_plane2.getGlobalBounds()))
+	{
+		return true;
+	}
+	return false;
 }

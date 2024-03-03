@@ -47,7 +47,8 @@ private:
 
 	void movePlanes();
 	void keepOnScreen(sf::Vector2f &t_location);
-	void drawPlane(sf::Sprite& t_plane);
+	void drawPlane(sf::Sprite &t_plane);
+	bool checkCollisionBB(sf::Sprite &t_plane1, sf::Sprite &t_plane2);
 
 
 	sf::RenderWindow m_window; // main SFML window
