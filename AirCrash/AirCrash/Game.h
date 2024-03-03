@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
+float vectorLenght(sf::Vector2f);
 
 const int HEIGHT = 800; // SCREEN HEIGHT
 const int WIDTH = 1000; // SCREEN WIDTH
@@ -49,7 +49,8 @@ private:
 	void keepOnScreen(sf::Vector2f &t_location);
 	void drawPlane(sf::Sprite &t_plane);
 	bool checkCollisionBB(sf::Sprite &t_plane1, sf::Sprite &t_plane2);
-
+	bool checkCollisionsDistance(sf::Vector2f t_post1, float t_rad1,
+		sf::Vector2f t_pos2, float t_rad2);
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -63,12 +64,14 @@ private:
 	sf::Vector2f m_bigPlaneVelocity{ 1.0f,-1.0f };//big plane velocity
 	sf::Vector2f m_bigPlaneLocation{ 200.0f,200.0f };  // big plane location
 	float m_bigHeading{ 45.0f }; // heding of big plane
-
+	float m_bigRadius;
 	// same for small plane
 	sf::Sprite m_smallPlaneSprite;
 	sf::Vector2f m_smallPlaneVelocity{ -0.6f,0.6f };
 	sf::Vector2f m_smallPlaneLocation{ 500.0f, 0.0f };	
 	float m_smallHeading{ 225.0f }; // heading of small plane
+	float m_smallRadius; // circkle bounding plane
+	
 
 
 	sf::Vector2f m_mouseDown; // location of mouse down click

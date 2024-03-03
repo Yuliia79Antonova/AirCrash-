@@ -34,6 +34,11 @@ Game::~Game()
 }
 
 
+
+float vectorLenght(sf::Vector2f t_v)
+{
+	return std::sqrtf(t_v.x * t_v.x + t_v.y * t_v.y);
+}
 /// <summary>
 /// main game loop
 /// update 60 times per second,
@@ -119,7 +124,9 @@ void Game::update(sf::Time t_deltaTime)
 	movePlanes(); 
 	keepOnScreen(m_smallPlaneLocation);
 	keepOnScreen(m_bigPlaneLocation);
-	if (checkCollisionBB(m_bigPlaneSprite, m_smallPlaneSprite))
+	//if (checkCollisionBB(m_bigPlaneSprite, m_smallPlaneSprite))
+	if(checkCollisionsDistance(m_bigPlaneLocation, m_bigRadius,
+		                     m_smallPlaneLocation, m_smallRadius))
 	{
 		m_bigPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
 		m_smallPlaneVelocity = sf::Vector2f{ 0.0f,0.0f };
@@ -221,17 +228,27 @@ void Game::setupPlanes()
 	{
 		std::cout << "Problem with planes images" << std::endl;
 	}
+
 	m_bigPlaneSprite.setTexture(m_planesTexture);
 	m_bigPlaneSprite.setTextureRect(bigRectangle);
 	m_bigPlaneSprite.setOrigin(bigRectangle.width / 2.0f, bigRectangle.height / 2.0f);
 	m_bigPlaneSprite.setPosition(m_bigPlaneLocation);
 	m_bigPlaneSprite.setRotation(m_bigHeading);
+	if (m_bigPlaneSprite.getLocalBounds().height > m_bigPlaneSprite.getLocalBounds().width)
+	{
+		m_bigRadius = m_bigPlaneSprite.getLocalBounds().height / 2.0f;
+	}
+	else
+	{
+		m_bigRadius = m_bigPlaneSprite.getLocalBounds().width / 2.0f;
+	}
 
 	m_smallPlaneSprite.setTexture(m_planesTexture);
 	m_smallPlaneSprite.setTextureRect(smallRectangle);
 	m_smallPlaneSprite.setOrigin(smallRectangle.width / 2.0f, smallRectangle.height / 2.0f);
 	m_smallPlaneSprite.setPosition(m_smallPlaneLocation);
 	m_smallPlaneSprite.setRotation(m_smallHeading);
+	m_smallRadius = smallRectangle.width / 2.0f; 
 }
 
 void Game::movePlanes()
@@ -327,5 +344,22 @@ bool Game::checkCollisionBB(sf::Sprite& t_plane1, sf::Sprite& t_plane2)
 	{
 		return true;
 	}
+	return false;
+}
+
+bool Game::checkCollisionsDistance(sf::Vector2f t_pos1, float t_rad1, sf::Vector2f t_pos2, float t_rad2)
+{
+	sf::Vector2f displacement;
+	float distance; float minimumSafeDistance;
+
+	minimumSafeDistance = t_rad1 + t_rad2;
+
+	displacement = t_pos1 - t_pos2;
+	distance = vectorLenght(displacement);
+	if (distance < minimumSafeDistance)
+	{
+		return true;
+	}
+
 	return false;
 }
